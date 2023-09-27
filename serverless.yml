@@ -1,0 +1,70 @@
+service: employee-portal
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  region: ap-south-1
+  environment:
+    DYNAMODB_TABLE_NAME: ${self:custom.employeerecordsTableName}
+custom:
+  employeerecordsTableName: employee-records-${self:provider.stage}
+plugins:
+  - serverless-iam-roles-per-function
+functions:
+  getEmployee:
+    handler: api.getEmployee
+    name: get-employee
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: employee/{empId}
+          method: GET
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:GetItem"
+        Resource: !GetAtt EmployeeRecordsTable.Arn
+  createEmployee:
+    handler: api.createEmployee
+    name: create-employee
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: employee
+          method: POST
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:PutItem"
+        Resource: !GetAtt EmployeeRecordsTable.Arn
+  getAllEmployees:
+    handler: api.getAllEmployees
+    name: get-all-employees
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: employees
+          method: GET
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:Scan"
+        Resource: !GetAtt EmployeeRecordsTable.Arn
+resources:
+  Resources:
+    EmployeeRecordsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.employeerecordsTableName}
+        AttributeDefinitions:
+          - AttributeName: empId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: empId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
