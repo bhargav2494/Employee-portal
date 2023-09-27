@@ -41,7 +41,7 @@ functions:
         Resource: !GetAtt EmployeeRecordsTable.Arn
   getAllEmployees:
     handler: api.getAllEmployees
-    name: get-all-employees
+    name: get-all-employees-records
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
