@@ -10,7 +10,7 @@ const {
   
   const client = new DynamoDBClient();
   
-  const getEmployee = async (event) => {
+  const getEmployeeRecord = async (event) => {
     const response = { statusCode: 200 };
     try {
       const params = {
@@ -35,7 +35,7 @@ const {
     return response;
   };
   
-  const createEmployee = async (event) => {
+  const createEmployeeRecord = async (event) => {
     const response = { statusCode: 200 };
     try {
       const body = JSON.parse(event.body);
@@ -129,7 +129,7 @@ const {
 //     return response;
 //   };
   
-  const getAllEmployees = async () => {
+  const getAllEmployeesrecords = async () => {
     const response = { statusCode: 200 };
     try {
       const { Items } = await client.send(
@@ -153,9 +153,9 @@ const {
   };
   
   module.exports = {
-    getEmployee,
-    createEmployee,
+    getEmployeeRecord,
+    createEmployeeRecord,
     // updateEmployee,
     // deleteEmployee,
-    getAllEmployees,
+    getAllEmployeesrecords,
   };

@@ -11,9 +11,9 @@ custom:
 plugins:
   - serverless-iam-roles-per-function
 functions:
-  getEmployee:
-    handler: api.getEmployee
-    name: get-employee
+  getEmployeeRecord:
+    handler: api.getEmployeeRecord
+    name: get-employee-record
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
@@ -25,9 +25,9 @@ functions:
         Action:
           - "dynamodb:GetItem"
         Resource: !GetAtt EmployeeRecordsTable.Arn
-  createEmployee:
-    handler: api.createEmployee
-    name: create-employee
+  createEmployeeRecord:
+    handler: api.createEmployeeRecord
+    name: create-employee-record
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
@@ -39,8 +39,8 @@ functions:
         Action:
           - "dynamodb:PutItem"
         Resource: !GetAtt EmployeeRecordsTable.Arn
-  getAllEmployees:
-    handler: api.getAllEmployees
+  getAllEmployeesrecords:
+    handler: api.getAllEmployeesrecords
     name: get-all-employees-records
     memorySize: 128 # mb
     timeout: 5 # seconds
