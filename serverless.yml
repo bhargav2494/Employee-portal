@@ -1,70 +1,35 @@
-service: employee-portal
+service: employee-management
+
 provider:
   name: aws
-  runtime: nodejs18.x
-  stage: dev
-  region: ap-south-1
-  environment:
-    DYNAMODB_TABLE_NAME: ${self:custom.employeerecordsTableName}
-custom:
-  employeerecordsTableName: employee-records-${self:provider.stage}
-plugins:
-  - serverless-iam-roles-per-function
+  runtime: nodejs14.x
+  region: us-east-1 # Change to your desired AWS region
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:PutItem"
+      Resource: "arn:aws:dynamodb:us-east-1:your-account-id:table/EmployeeTable" # Replace with your DynamoDB table ARN
+
 functions:
-  getEmployeeRecord:
-    handler: api.getEmployeeRecord
-    name: get-employee-record
-    memorySize: 128 # mb
-    timeout: 5 # seconds
+  createEmployee:
+    handler: handler.handler
     events:
       - http:
-          path: employee/{empId}
-          method: GET
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "dynamodb:GetItem"
-        Resource: !GetAtt EmployeeRecordsTable.Arn
-  createEmployeeRecord:
-    handler: api.createEmployeeRecord
-    name: create-employee-record
-    memorySize: 128 # mb
-    timeout: 5 # seconds
-    events:
-      - http:
-          path: employee
-          method: POST
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "dynamodb:PutItem"
-        Resource: !GetAtt EmployeeRecordsTable.Arn
-  getAllEmployeesrecords:
-    handler: api.getAllEmployeesrecords
-    name: get-all-employees-records
-    memorySize: 128 # mb
-    timeout: 5 # seconds
-    events:
-      - http:
-          path: employees
-          method: GET
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "dynamodb:Scan"
-        Resource: !GetAtt EmployeeRecordsTable.Arn
+          path: create-employee
+          method: post
+
 resources:
   Resources:
-    EmployeeRecordsTable:
-      Type: AWS::DynamoDB::Table
+    EmployeeTable:
+      Type: "AWS::DynamoDB::Table"
       Properties:
-        TableName: ${self:custom.employeerecordsTableName}
+        TableName: EmployeeTable
         AttributeDefinitions:
-          - AttributeName: empId
+          - AttributeName: employeeId
             AttributeType: S
         KeySchema:
-          - AttributeName: empId
+          - AttributeName: employeeId
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5 # Adjust based on your needs
