@@ -3,12 +3,12 @@ service: employee-management
 provider:
   name: aws
   runtime: nodejs14.x
-  region: us-east-1 # Change to your desired AWS region
+  region: ap-south-1 # Change to your desired AWS region
   iamRoleStatements:
     - Effect: "Allow"
       Action:
         - "dynamodb:PutItem"
-      Resource: "arn:aws:dynamodb:us-east-1:your-account-id:table/EmployeeTable" # Replace with your DynamoDB table ARN
+      Resource: "arn:aws:dynamodb:ap-south-1:your-account-id:table/EmployeeTable" # Replace with your DynamoDB table ARN
 
 functions:
   createEmployee:
